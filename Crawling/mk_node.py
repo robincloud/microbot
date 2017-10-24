@@ -15,16 +15,16 @@ class mk_node():
         for item in item_list:
             node = nods()
 
-            #상품 id가져오기
+            # 상품 id가져오기
             node.id = int(item.get('data-ex-nv-mid'))
             id_list.append(node.id)
 
-            #상품명 가져오기
+            # 상품명 가져오기
             node.name = str(
                 item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(recursive=False)[
                     1].findChildren(recursive=False)[0].find(text=True))
 
-            #상품 판매처, 네이버 페이 가져오기
+            # 상품 판매처, 네이버 페이 가져오기
             try:
                 node.mall = str(
                     item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(
@@ -37,10 +37,10 @@ class mk_node():
                         recursive=False)[0].findChildren(recursive=False)[0].get('data-mall-name'))
                 node.npay = 0
 
-            #상품가격 가져오기
+            # 상품가격 가져오기
             price_tmp = \
-            item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(recursive=False)[
-                2].findChildren(recursive=False)[0].findChildren(recursive=False)
+                item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(recursive=False)[
+                    2].findChildren(recursive=False)[0].findChildren(recursive=False)
             for tmp in price_tmp:
                 tmp_txt = tmp.find(text=True)
                 if '최저' in str(tmp_txt):
@@ -51,8 +51,10 @@ class mk_node():
                 except:
                     node.price = int(tmp_txt)
 
-            #상품 배송비 가져오기
-            tmp = str(item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(recursive=False)[3].findChildren(recursive=False)[0].find(text=True))[:-1]
+            # 상품 배송비 가져오기
+            tmp = str(
+                item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(recursive=False)[
+                    3].findChildren(recursive=False)[0].find(text=True))[:-1]
             if '무료' in tmp:
                 tmp = '0'
             else:
@@ -64,25 +66,23 @@ class mk_node():
 
             self.node_list.append(node.__dict__)
 
-
-
         soup = BeautifulSoup(self.source_2, 'html.parser')
         item_list = soup.find_all('table', class_='tbl tbl_v')
 
         for item in item_list:
             node = nods()
 
-            #상품 id가져오기
+            # 상품 id가져오기
             node.id = int(item.get('data-ex-nv-mid'))
             if node.id in id_list:
                 continue
 
-            #상품명 가져오기
+            # 상품명 가져오기
             node.name = str(
                 item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(recursive=False)[
                     1].findChildren(recursive=False)[0].find(text=True))
 
-            #상품 판매처, 네이버 페이 가져오기
+            # 상품 판매처, 네이버 페이 가져오기
             try:
                 node.mall = str(
                     item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(
@@ -95,10 +95,10 @@ class mk_node():
                         recursive=False)[0].findChildren(recursive=False)[0].get('data-mall-name'))
                 node.npay = 0
 
-            #상품가격 가져오기
+            # 상품가격 가져오기
             price_tmp = \
-            item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(recursive=False)[
-                2].findChildren(recursive=False)[0].findChildren(recursive=False)
+                item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(recursive=False)[
+                    2].findChildren(recursive=False)[0].findChildren(recursive=False)
             for tmp in price_tmp:
                 tmp_txt = tmp.find(text=True)
                 if '최저' in str(tmp_txt):
@@ -109,8 +109,10 @@ class mk_node():
                 except:
                     node.price = int(tmp_txt)
 
-            #상품 배송비 가져오기
-            tmp = str(item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(recursive=False)[3].findChildren(recursive=False)[1].find(text=True))[1:-2]
+            # 상품 배송비 가져오기
+            tmp = str(
+                item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(recursive=False)[
+                    3].findChildren(recursive=False)[1].find(text=True))[1:-2]
             if '무료' in tmp:
                 node.delivery = 0
             else:
