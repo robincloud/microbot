@@ -52,17 +52,17 @@ class mk_node():
                     node.price = int(tmp_txt)
 
             # 상품 배송비 가져오기
-            tmp = str(
+            tmp_deliver = str(
                 item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(recursive=False)[
                     3].findChildren(recursive=False)[0].find(text=True))[:-1]
-            if '무료' in tmp:
-                tmp = '0'
+            if '무료' in tmp_deliver:
+                tmp_deliver = '0'
             else:
                 try:
-                    tmp = tmp.replace(',', '')
-                    node.delivery = int(tmp)
+                    tmp_deliver = tmp_deliver.replace(',', '')
+                    node.delivery = int(tmp_deliver)
                 except:
-                    node.delivery = int(tmp)
+                    node.delivery = int(tmp_deliver)
 
             self.node_list.append(node.__dict__)
 
@@ -110,14 +110,14 @@ class mk_node():
                     node.price = int(tmp_txt)
 
             # 상품 배송비 가져오기
-            tmp = str(
+            tmp_deliver = str(
                 item.findChildren(recursive=False)[2].findChildren(recursive=False)[0].findChildren(recursive=False)[
                     3].findChildren(recursive=False)[1].find(text=True))[1:-2]
-            if '무료' in tmp:
+            if '무료' in tmp_deliver:
                 node.delivery = 0
             else:
                 try:
-                    tmp = tmp.replace(',', '')
-                    node.delivery = int(tmp)
+                    tmp_deliver = tmp_deliver.replace(',', '')
+                    node.delivery = int(tmp_deliver)
                 except:
-                    node.delivery = int(tmp)
+                    node.delivery = int(tmp_deliver)

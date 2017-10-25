@@ -23,18 +23,17 @@ class mk_data():
             # node 생성
             nodes = mk_node(self.source_1, self.source_2)
             nodes.make()
-            nodes_json = ''
             self.data.nodes = nodes.node_list
 
             self.data.id = self.mid
             self.data.mid = self.mid
-            self.data.cat_id = meta.meta.cat_id
+            self.data.cat_id = meta.meta['cat_id']
 
             soup = BeautifulSoup(self.source_1, 'html.parser')
             self.data.pkey = soup.find('li', class_='on').get('data-filter-value')
 
-            self.data.cat = meta.meta.cat
-            self.data.count = meta.meta.compare_count
+            self.data.cat = meta.meta['cat']
+            self.data.count = meta.meta['compare_count']
             self.data.item_name = str(
                 soup.find('div', class_='h_area').findChildren(recursive=False)[0].find(text=True)).replace('\n',
                                                                                                             '').strip()

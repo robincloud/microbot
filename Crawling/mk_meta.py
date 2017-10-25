@@ -73,3 +73,5 @@ class mk_meta():
             self.meta.jjim = int(str(soup.find('em', class_='cnt _keepCount').find(text=True)).replace(',', ''))
         except:
             self.meta.jjim = int(str(soup.find('em', class_='cnt _keepCount').find(text=True)))
+
+        self.meta = self.meta.__dict__
