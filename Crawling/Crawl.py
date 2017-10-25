@@ -15,7 +15,7 @@ class Crawl():
     def main(self):
         display = Display(visible=0, size=(800, 600))
         display.start()
-        driver = webdriver.Firefox()
+        driver = webdriver.Firefox(log_path='/home/pi/Django/geckodriver.log')
         driver.get(self.MID_URL)
         html = driver.page_source
         soup = BeautifulSoup(html, 'html.parser')
