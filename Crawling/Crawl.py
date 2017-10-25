@@ -2,6 +2,7 @@ from selenium import webdriver
 import selenium.webdriver.support.ui as ui
 from bs4 import BeautifulSoup
 from Crawling.mk_data import mk_data
+from pyvirtualdisplay import Display
 
 
 class Crawl():
@@ -12,6 +13,8 @@ class Crawl():
         self.data_list = []
 
     def main(self):
+        display = Display(visible=0, size=(800, 600))
+        display.start()
         driver = webdriver.Firefox()
         driver.get(self.MID_URL)
         html = driver.page_source
@@ -63,3 +66,6 @@ class Crawl():
             data = mk_data('', '', self.MID, '', self.valid)
             data.make()
             self.data_list.append(data.data.__dict__)
+
+        driver.close()
+        display.popen.kill()
