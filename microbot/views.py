@@ -1,5 +1,5 @@
 import json
-import time
+from datetime import datetime
 from django.http import JsonResponse
 from Crawling.Crawl import Crawl
 from django.views.decorators.csrf import csrf_exempt
@@ -14,6 +14,6 @@ def crawl(request):
         obj = Crawl(mid)
         obj.main()
 
-        F_json = {'time': str(time.localtime()), 'api': 'item_detail', 'data': obj.data_list}
+        F_json = {'time': str(datetime.now())[:-4], 'api': 'item_detail', 'data': obj.data_list}
 
         return JsonResponse(json.dump(F_json))
