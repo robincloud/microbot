@@ -1,5 +1,5 @@
 import json
-from django.shortcuts import render
+import time
 from django.http import JsonResponse
 from Crawling.Crawl import Crawl
 from django.views.decorators.csrf import csrf_exempt
@@ -7,14 +7,13 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def crawl(request):
-        req = ((request.body).decode('utf-8'))
+        req = (request.body.decode('utf-8'))
         return_json_str = json.loads(req)
         mid = return_json_str['mid']
 
-        obj = Crawl()
+        obj = Crawl(mid)
+        obj.main()
 
-        return JsonResponse({
-                'type' : 'buttons',
-                'buttons' : ['1','2']
-                })
+        F_json = {'time': str(time.localtime()), 'api': 'item_detail', 'data': obj.data_list}
 
+        return JsonResponse(json.dump(F_json))

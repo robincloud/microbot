@@ -5,18 +5,17 @@ from Crawling.mk_data import mk_data
 
 
 class Crawl():
-    def __init__(self, driver, MID):
+    def __init__(self, MID):
         self.MID_URL = 'http://shopping.naver.com/detail/detail.nhn?nv_mid=' + MID
-        self.Driver_LOC = driver
         self.MID = MID
         self.valid = False
+        self.data_list = []
 
     def main(self):
-        driver = webdriver.Chrome(self.Driver_LOC)
+        driver = webdriver.Firefox()
         driver.get(self.MID_URL)
         html = driver.page_source
         soup = BeautifulSoup(html, 'html.parser')
-        data_list = []
 
         try:
             valid_txt = str(soup.find('h3').find(text=True))
@@ -51,16 +50,16 @@ class Crawl():
                     source_2 = driver.page_source
                     data = mk_data(source_1, source_2, self.MID, option_name, self.valid)
                     data.make()
-                    data_list.append(data.data.__dict__)
+                    self.data_list.append(data.data.__dict__)
             except:
                 source_1 = driver.page_source
                 driver.find_element_by_xpath('//*[@id="section_price"]/div[2]/div[1]/div[2]/span[1]/a').click()
                 source_2 = driver.page_source
                 data = mk_data(source_1, source_2, self.MID, '', self.valid)
                 data.make()
-                data_list.append(data.data.__dict__)
+                self.data_list.append(data.data.__dict__)
 
         else:
             data = mk_data('', '', self.MID, '', self.valid)
             data.make()
-            data_list.append(data.data.__dict__)
+            self.data_list.append(data.data.__dict__)
