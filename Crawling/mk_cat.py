@@ -1,15 +1,13 @@
 from Crawling.item import category
-from bs4 import BeautifulSoup
 
 
 class mk_cat():
-    def __init__(self, html):
+    def __init__(self, soup):
         self.cat = []
-        self.source = html
+        self.soup = soup
 
     def make(self):
-        soup = BeautifulSoup(self.source, 'html.parser')
-        wrap = soup.find_all('span', class_='s_nowrap')
+        wrap = self.soup.find_all('span', class_='s_nowrap')
         depth = 0
         for item in wrap:
             # 객체 생성
