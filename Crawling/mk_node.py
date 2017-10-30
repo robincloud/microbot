@@ -53,7 +53,9 @@ class mk_node():
                 item.findChildren(recursive=False)[2].findChildren(recursive=False)[
                     3].findChildren(recursive=False)[0].find(text=True))[:-1]
             if '무료' in tmp_deliver:
-                tmp_deliver = '0'
+                node.delivery = 0
+            elif '착' in tmp_deliver:
+                node.delivery = 3000
             else:
                 try:
                     tmp_deliver = tmp_deliver.replace(',', '')
@@ -111,13 +113,15 @@ class mk_node():
                 tmp_deliver = str(
                     item.findChildren(recursive=False)[2].findChildren(recursive=False)[
                         3].findChildren(recursive=False)[1].find(text=True))[1:-2]
+
                 if '무료' in tmp_deliver:
-                    tmp_deliver = '0'
+                    node.delivery = 0
+                elif '착' in tmp_deliver:
+                    node.delivery = 3000
                 else:
                     try:
                         tmp_deliver = tmp_deliver.replace(',', '')
                         node.delivery = int(tmp_deliver)
                     except:
                         node.delivery = int(tmp_deliver)
-
                 self.node_list.append(node.__dict__)

@@ -6,8 +6,8 @@ import time
 from multiprocessing import Pool
 import json
 
-GET_URL = 'http://127.0.0.1:8000/get/'
-POST_URL = 'http://127.0.0.1:8000/return/'
+GET_URL = 'http://192.168.0.167:7000/get/'
+POST_URL = 'http://192.168.0.167:7000/return/'
 URL_F = 'http://shopping.naver.com/detail/detail.nhn?nv_mid='
 URL_M = '&pkey='
 URL_T = '&withFee='
@@ -116,4 +116,7 @@ if __name__ == '__main__':
         data_list = pool.map(Crawl, get_pkey(info['mid']))
         post(info, data_list)
         print("--- %s seconds ---" % (time.time() - start_time))
+        if int(time.time() - start_time) < 10:
+            print("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
+            time.sleep(10-int(time.time() - start_time))
         print('')
