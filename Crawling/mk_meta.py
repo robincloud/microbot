@@ -36,16 +36,19 @@ class mk_meta():
 
         # 리뷰 갯수 가져오기
         try:
-            review_count = str(
-                detail[1].findChildren(recursive=False)[0].findChildren(recursive=False)[1].find(text=True))
+            try:
+                review_count = str(
+                    detail[1].findChildren(recursive=False)[0].findChildren(recursive=False)[1].find(text=True))
+            except:
+                review_count = str(
+                    detail[2].findChildren(recursive=False)[0].findChildren(recursive=False)[1].find(text=True))
+            try:
+                review_count.replace(',', '')
+                self.meta.review_count = int(review_count.replace(',', ''))
+            except:
+                self.meta.review_count = int(review_count.replace(',', ''))
         except:
-            review_count = str(
-                detail[2].findChildren(recursive=False)[0].findChildren(recursive=False)[1].find(text=True))
-        try:
-            review_count.replace(',', '')
-            self.meta.review_count = int(review_count.replace(',', ''))
-        except:
-            self.meta.review_count = int(review_count.replace(',', ''))
+            self.meta.review_count = 0
 
         # info 텍스트 가져오기
         info_list = self.soup.find('div', class_='info_inner').findChildren(recursive=False)[:3]
