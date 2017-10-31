@@ -3,8 +3,11 @@ from bs4 import BeautifulSoup
 from Crawling.mk_data import mk_data
 from Crawling.mk_meta import mk_meta
 import time
+import datetime
 from multiprocessing import Pool
 import json
+import git
+import os
 
 GET_URL = 'http://192.168.0.167:7000/get/'
 POST_URL = 'http://192.168.0.167:7000/return/'
@@ -12,10 +15,43 @@ URL_F = 'http://shopping.naver.com/detail/detail.nhn?nv_mid='
 URL_M = '&pkey='
 URL_T = '&withFee='
 
+def getNowDate():
+    now = datetime.datetime.now()
+    year = now.year
+    month = now.month
+    day = now.day
+    hour = now.hour
+    minute = now.minute
+    nowDate = str(year)+"-"+str(month)+"-"+str(day)+","+str(hour)+":"+str(minute)
+    return nowDate
+
+def chk_ver(version):
+    path = os.path.dirname(os.path.abspath(__file__))
+    try:
+        with open(path + '\\version.json', "r") as f:
+            json_data = f.read()
+            data = json.loads(json_data)
+        if version != data['version']:
+            g = git.cmd.Git(path)
+            g.pull()
+        with open(path + '\\version.json', "w") as f:
+            data['version'] = version
+            data['date'] = getNowDate()
+            data['success'] = True
+            json.dump(data, f, ensure_ascii=False, indent="\t")
+    except:
+        with open(path + '\\version.json', "w") as f:
+            data['date'] = getNowDate()
+            data['success'] = False
+            json.dump(data, f, ensure_ascii=False, indent="\t")
+
+
 
 def get_MID():
     req = requests.get(GET_URL)
-    return req.json()
+    r_json = req.json()
+    chk_ver(r_json['version'])
+    return r_json
 
 def post(info, data_list):
     data = json.dumps({
