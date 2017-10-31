@@ -4,7 +4,7 @@ MicroBot
 
 Open API for Microbot.
 
-----------
+<br>
 
 
 Enviroment
@@ -17,12 +17,13 @@ Enviroment
 > - Recommend to Download **RASPBIAN STRETCH LITE** version
 > - Python3 is now built-in in Raspbian
 
+<br>
 
 Installation
 -------------
 #### <i class="icon-file"></i> Copy Raspbian to MicroSD Card
 
-[Use Etcher.](https://etcher.io/)
+[Use Etcher.](https://etcher.io/)<br>
  You can use this tool whatever your operation system is. (eg. Windows, MacOS, Linux)
 
 ![Tuto](https://etcher.io/static/screenshot.gif)
@@ -45,7 +46,7 @@ $ sudo pip3 install requests Beautifulsoup4
 $ git clone https://github.com/robincloud/microbot.git ~/Microbot
 ```
 
-----------
+<br>
 
 
 Specification
@@ -54,43 +55,45 @@ Specification
 **HTTP GET**
 
 JSON Type
-|Field Name       | Type       | EXP|
-|-----------------|------------|----------|
-|id               |  string    | 상품 아이디|
-|mid              |  string    | 상품 mid|
 
+| Field Name  | Type       | EXP         |
+| ----------- | ---------- |------------ |
+| id          | string     | 상품 아이디 |
+| mid         | string     | 상품 mid    |
 
-----------
+<br><br>
 
 **HTTP POST**
 
 JSON Type
-|Field Name       | Type       | EXP|
-|-----------------|------------|----------|
-|id               |  string    | 상품 아이디|
-|mid              |  string    | 상품 mid|
-|data             |  list      | 크롤링한 데이터|
 
+| Field Name    | Type       | EXP              |
+| ------------- | ---------- | ---------------- |
+| id            | string     | 상품 아이디      |
+| mid           | string     | 상품 mid         |
+| data          | list       | 크롤링한 데이터  |
+
+<br><br>
 data field
-Dict Type
-|Field Name       | Type       | EXP|
-|-----------------|------------|----------|
-|id               |  string    | 상품 아이디|
-|mid              |  string    | 상품 mid|
-|pkey             |  int       | 옵션에 대한 고유값|
-|cat              |  string    | 카테고리|
-|count            |  int       | 판매몰 수|
-|item_name        |  string    | 상품명|
-|option_name      |  string    | 옵션명|
-|nods             |  list      | 판매몰에대한 정보|
 
+| Field Name       | Type       | EXP
+| -----------------| --------- | ---------------------|
+| id               | string    | 상품 아이디          |
+| mid              | string    | 상품 mid             |
+| pkey             | int       | 옵션에 대한 고유값   |
+| cat              | string    | 카테고리             |
+| count            | int       | 판매몰 수            |
+| item_name        | string    | 상품명               |
+| option_name      | string    | 옵션명               |
+| nods             | list      | 판매몰에대한 정보    |
+<br><br>
 nods field
-Dict Type
-|Field Name       | Type       | EXP|
-|-----------------|------------|----------|
-|id               |  string    | 판매몰 아이디|
-|name             |  string    | 판매몰 상품명|
-|mall             |  string    | 판매몰 업체명|
-|price            |  int       | 판매몰에서 올린 가격|
-|delivery         |  int       | 판매몰의 배송비|
-|npay             |  int       | 네이버 패이 지원여부<br>0: False, 1: True|
+
+| Field Name      | Type       | EXP                                       |
+| --------------- | ---------- | ----------------------------------------- |
+| id              | string     | 판매몰 아이디                             |
+| name            | string     | 판매몰 상품명                             |
+| mall            | string     | 판매몰 업체명                             |
+| price           | int        | 판매몰에서 올린 가격                      |
+| delivery        | int        | 판매몰의 배송비                           |
+| npay            | int        | 네이버 패이 지원여부<br>0: False, 1: True |

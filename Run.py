@@ -50,10 +50,16 @@ def chk_ver(version):
 
 
 def get_MID():
-    req = requests.get(GET_URL)
-    r_json = req.json()
-    chk_ver(r_json['version'])
-    return r_json
+    while 1:
+        try:
+            req = requests.get(GET_URL)
+            r_json = req.json()
+            chk_ver(r_json['version'])
+            return r_json
+        except:
+            print('Server is Down')
+            time.sleep(10)
+
 
 def post(info, data_list):
     data = json.dumps({
@@ -61,8 +67,19 @@ def post(info, data_list):
         'mid': info['mid'],
         'data': data_list,
     })
-    requests.post(POST_URL, data=data)
-    requests.post(POST_URL_2, data=data)
+    while 1:
+        try:
+            while requests.post(POST_URL, data=data).status_code != 200:
+                print('Posting Fail. Sleep for 10 Sec and retry.')
+                time.sleep(10)
+            while requests.post(POST_URL_2, data=data).status_code != 200:
+                print('Posting Fail. Sleep for 10 Sec and retry.')
+                time.sleep(10)
+                return
+        except:
+            print('Server is Down')
+            time.sleep(10)
+
 
 def get_pkey(mid):
     print("--- start " + mid + '---')
