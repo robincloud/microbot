@@ -61,7 +61,7 @@ JSON Type
 | id          | string     | 상품 아이디 |
 | mid         | string     | 상품 mid    |
 
-<br><br>
+<br>
 
 **HTTP POST**
 
@@ -73,7 +73,6 @@ JSON Type
 | mid           | string     | 상품 mid         |
 | data          | list       | 크롤링한 데이터  |
 
-<br><br>
 data field
 
 | Field Name       | Type       | EXP
@@ -86,7 +85,7 @@ data field
 | item_name        | string    | 상품명               |
 | option_name      | string    | 옵션명               |
 | nods             | list      | 판매몰에대한 정보    |
-<br><br>
+
 nods field
 
 | Field Name      | Type       | EXP                                       |
