@@ -145,7 +145,7 @@ if __name__ == '__main__':
         data_list = pool.map(Crawl, get_pkey(info['mid']))
         post(info, data_list)
         print("--- %s seconds ---" % (time.time() - start_time))
-#        if int(time.time() - start_time) < 10:
-#            print("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
-#            time.sleep(10-int(time.time() - start_time))
+        if int(time.time() - start_time) < 10:
+            print("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
+            time.sleep(10-int(time.time() - start_time))
         print('')
