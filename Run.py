@@ -145,10 +145,10 @@ def Crawl(work_list):
 
 
 if __name__ == '__main__':
+    pool = Pool(processes=4)
     while 1:
         start_time = time.time()
         info = get_MID()
-        pool = Pool(processes=4)
         data_list = pool.map(Crawl, get_pkey(info['mid']))
         post(info, data_list)
         print("--- %s seconds ---" % (time.time() - start_time))
