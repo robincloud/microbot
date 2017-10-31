@@ -27,7 +27,7 @@ def getNowDate():
     return nowDate
 
 def chk_ver(version):
-    path = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.dirname(os.path.abspath('Run.py'))
     try:
         with open(path + '/version.json', "r") as f:
             json_data = f.read()
@@ -147,7 +147,7 @@ if __name__ == '__main__':
         data_list = pool.map(Crawl, get_pkey(info['mid']))
         post(info, data_list)
         print("--- %s seconds ---" % (time.time() - start_time))
-        if int(time.time() - start_time) < 10:
-            print("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
-            time.sleep(10-int(time.time() - start_time))
+#        if int(time.time() - start_time) < 10:
+#            print("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
+#            time.sleep(10-int(time.time() - start_time))
         print('')
