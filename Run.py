@@ -28,19 +28,19 @@ def getNowDate():
 def chk_ver(version):
     path = os.path.dirname(os.path.abspath(__file__))
     try:
-        with open(path + '\\version.json', "r") as f:
+        with open(path + '/version.json', "r") as f:
             json_data = f.read()
             data = json.loads(json_data)
         if version != data['version']:
             g = git.cmd.Git(path)
             g.pull()
-        with open(path + '\\version.json', "w") as f:
+        with open(path + '/version.json', "w") as f:
             data['version'] = version
             data['date'] = getNowDate()
             data['success'] = True
             json.dump(data, f, ensure_ascii=False, indent="\t")
     except:
-        with open(path + '\\version.json', "w") as f:
+        with open(path + '/version.json', "w") as f:
             data['date'] = getNowDate()
             data['success'] = False
             json.dump(data, f, ensure_ascii=False, indent="\t")
