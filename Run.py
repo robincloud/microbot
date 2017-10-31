@@ -11,7 +11,7 @@ import os
 
 GET_URL = 'http://192.168.0.167:7000/get/'
 POST_URL = 'http://192.168.0.167:7000/return/'
-#POST_URL_2 = 'http://ml-api.oneprice.co.kr:8090/items/malls'
+POST_URL_2 = 'http://ml-api.oneprice.co.kr:8090/items/malls'
 URL_F = 'http://shopping.naver.com/detail/detail.nhn?nv_mid='
 URL_M = '&pkey='
 URL_T = '&withFee='
@@ -61,7 +61,7 @@ def post(info, data_list):
         'data': data_list,
     })
     requests.post(POST_URL, data=data)
-#    requests.post(POST_URL_2, data=data)
+    requests.post(POST_URL_2, data=data)
 
 def get_pkey(mid):
     print("--- start " + mid + '---')
@@ -147,7 +147,7 @@ if __name__ == '__main__':
         data_list = pool.map(Crawl, get_pkey(info['mid']))
         post(info, data_list)
         print("--- %s seconds ---" % (time.time() - start_time))
-#        if int(time.time() - start_time) < 10:
-#            print("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
-#            time.sleep(10-int(time.time() - start_time))
+        if int(time.time() - start_time) < 10:
+            print("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
+            time.sleep(10-int(time.time() - start_time))
         print('')
