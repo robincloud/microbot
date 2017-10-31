@@ -11,7 +11,7 @@ import os
 
 GET_URL = 'http://192.168.0.167:7000/get/'
 POST_URL = 'http://192.168.0.167:7000/return/'
-POST_URL_2 = 'http://ml-api.oneprice.co.kr:8090/items/malls'
+#POST_URL_2 = 'http://ml-api.oneprice.co.kr:8090/items/malls'
 URL_F = 'http://shopping.naver.com/detail/detail.nhn?nv_mid='
 URL_M = '&pkey='
 URL_T = '&withFee='
@@ -73,9 +73,9 @@ def post(info, data_list):
             while requests.post(POST_URL, data=data).status_code != 200:
                 print('Posting Fail. Sleep for 10 Sec and retry.')
                 time.sleep(10)
-            while requests.post(POST_URL_2, data=data).status_code != 200:
-                print('Posting Fail. Sleep for 10 Sec and retry.')
-                time.sleep(10)
+#            while requests.post(POST_URL_2, data=data).status_code != 200:
+#                print('Posting Fail. Sleep for 10 Sec and retry.')
+#                time.sleep(10)
                 return
         except:
             print('Server is Down')
