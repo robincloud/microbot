@@ -68,7 +68,7 @@ def get_pkey(mid):
     html = req.text
     soup = BeautifulSoup(html, 'html.parser')
     try:
-        valid_txt = str(soup.find('h3').find(text=True))
+        valid_txt = soup.find('h3', class_='release').find(text=True)
         if '판매중단' in valid_txt:
             tmp_list = []
             tmp_list.append(mid)
@@ -77,7 +77,7 @@ def get_pkey(mid):
             return work_list
     except:
         try:
-            valid_txt = soup.find_all('h2')[3].find(text=True)
+            valid_txt = soup.find('span', class_='g_err_ico').find_next_sibling('h2').find(text=True)
             if '상품이' in valid_txt:
                 tmp_list = []
                 tmp_list.append(mid)
@@ -85,30 +85,23 @@ def get_pkey(mid):
                 work_list.append(tmp_list)
                 return work_list
         except:
-            tmp_list = []
-            tmp_list.append(mid)
-            tmp_list.append(True)
-            work_list.append(tmp_list)
-            return work_list
-
-
-    try:
-        option_list = soup.find_all('div', class_='condition_group')[1].findChildren(recursive=False)[
-            1].findChildren(recursive=False)
-        for item in option_list:
-            tmp = str(item.get('data-filter-value'))
-            if tmp != '':
+            try:
+                option_list = soup.find_all('div', class_='condition_group')[1].findChildren(recursive=False)[
+                    1].findChildren(recursive=False)
+                for item in option_list:
+                    tmp = str(item.get('data-filter-value'))
+                    if tmp != '':
+                        tmp_list = []
+                        tmp_list.append(mid)
+                        tmp_list.append(tmp)
+                        tmp_list.append(str(item.findChildren(recursive=False)[2].findChildren(recursive=False)[1].find(text=True)))
+                        work_list.append(tmp_list)
+            except:
                 tmp_list = []
                 tmp_list.append(mid)
-                tmp_list.append(tmp)
-                tmp_list.append(str(item.findChildren(recursive=False)[2].findChildren(recursive=False)[1].find(text=True)))
+                tmp_list.append('')
                 work_list.append(tmp_list)
-    except:
-        tmp_list = []
-        tmp_list.append(mid)
-        tmp_list.append('')
-        work_list.append(tmp_list)
-    return work_list
+            return work_list
 
 def Crawl(work_list):
     if work_list[1] == True:
@@ -152,7 +145,7 @@ if __name__ == '__main__':
         data_list = pool.map(Crawl, get_pkey(info['mid']))
         post(info, data_list)
         print("--- %s seconds ---" % (time.time() - start_time))
-        if int(time.time() - start_time) < 10:
-            print("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
-            time.sleep(10-int(time.time() - start_time))
+#        if int(time.time() - start_time) < 10:
+#            print("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
+#            time.sleep(10-int(time.time() - start_time))
         print('')
