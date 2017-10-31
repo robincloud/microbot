@@ -105,6 +105,8 @@ class mk_node():
                     tmp_txt = tmp.find(text=True)
                     if '최저' in str(tmp_txt):
                         continue
+                    elif '인기' in str(tmp_txt):
+                        continue
                     try:
                         tmp_txt = tmp_txt.replace(',', '')
                         node.price = int(tmp_txt)
