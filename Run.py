@@ -35,7 +35,7 @@ def chk_ver(version):
             data = json.loads(json_data)
         if version != data['version']:
             g = git.cmd.Git(path)
-            g.pull()
+            print(g.pull())
         with open(path + '/version.json', "w") as f:
             data['version'] = version
             data['date'] = getNowDate()
