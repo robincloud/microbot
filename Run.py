@@ -70,13 +70,8 @@ def post(info, data_list):
     })
     while 1:
         try:
-            while requests.post(POST_URL, data=data).status_code != 200:
-                print('Posting Fail. Sleep for 10 Sec and retry.')
-                time.sleep(10)
-#            while requests.post(POST_URL_2, data=data).status_code != 200:
-#                print('Posting Fail. Sleep for 10 Sec and retry.')
-#                time.sleep(10)
-                return
+            requests.post(POST_URL, data=data)
+            return
         except:
             print('Server is Down')
             time.sleep(10)
