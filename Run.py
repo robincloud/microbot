@@ -28,6 +28,7 @@ def getNowDate():
 
 def chk_ver(version):
     path = os.path.dirname(os.path.abspath('Run.py'))
+    data = {}
     try:
         with open(path + '/version.json', "r") as f:
             json_data = f.read()
