@@ -18,10 +18,6 @@ class mk_data():
             nodes.make()
             self.data.nodes = nodes.node_list
 
-            self.data.id = self.mid
-            self.data.mid = self.mid
-            self.data.cat_id = self.data.meta['cat_id']
-
             self.data.pkey = self.soup_1.find('li', class_='on').get('data-filter-value')
 
             self.data.cat = self.data.meta['cat']

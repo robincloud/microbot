@@ -8,10 +8,15 @@ from multiprocessing import Pool
 import json
 import git
 import os
+import socket
+from uuid import getnode
+import psutil
 
 GET_URL = 'http://192.168.0.167:7000/get/'
 POST_URL = 'http://192.168.0.167:7000/return/'
-#POST_URL_2 = 'http://ml-api.oneprice.co.kr:8090/items/malls'
+POST_URL_2 = 'http://robin-api.oneprice.co.kr/items'
+DEVICE_URL = 'http://192.168.0.167:7000/device/'
+MSG_URL = 'http://192.168.0.167:7000/msg/'
 URL_F = 'http://shopping.naver.com/detail/detail.nhn?nv_mid='
 URL_M = '&pkey='
 URL_T = '&withFee='
@@ -55,6 +60,11 @@ def get_MID():
         try:
             req = requests.get(GET_URL)
             r_json = req.json()
+            data = {
+                'name': str(socket.gethostname()),
+                'uuid': str(getnode()),
+            }
+            requests.post(DEVICE_URL, json=data)
             chk_ver(r_json['version'])
             return r_json
         except:
@@ -63,14 +73,15 @@ def get_MID():
 
 
 def post(info, data_list):
-    data = json.dumps({
-        'id': info['id'],
+    data = {
+        'id': 'nv_' + info['id'],
         'mid': info['mid'],
         'data': data_list,
-    })
+    }
     while 1:
         try:
-            requests.post(POST_URL, data=data)
+            requests.post(POST_URL, data=json.dumps(data))
+            requests.post(POST_URL_2, json=data)
             return
         except:
             print('Server is Down')
@@ -78,7 +89,6 @@ def post(info, data_list):
 
 
 def get_pkey(mid):
-    print("--- start " + mid + '---')
     work_list = []
     req = requests.get(URL_F + mid)
     html = req.text
@@ -156,12 +166,25 @@ def Crawl(work_list):
 if __name__ == '__main__':
     pool = Pool(processes=4)
     while 1:
+        msg = []
         start_time = time.time()
         info = get_MID()
+
+        msg.append("--- start " + info['mid'] + ' ---')
+        print(msg[0])
+
         data_list = pool.map(Crawl, get_pkey(info['mid']))
         post(info, data_list)
-        print("--- %s seconds ---" % (time.time() - start_time))
+
+        for data in data_list:
+            msg.append(data['option_name'] + ' Finish!')
+
+        msg.append("--- %s seconds ---" % (time.time() - start_time))
+        print(msg[-1])
+
         if int(time.time() - start_time) < 10:
-            print("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
+            msg.append("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
+            print(msg[-1])
             time.sleep(10-int(time.time() - start_time))
+        requests.post(MSG_URL, json={'uuid': getnode(), 'msg': msg, 'cpu': psutil.cpu_percent()})
         print('')

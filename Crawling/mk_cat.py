@@ -24,5 +24,5 @@ class mk_cat():
             tmp.depth = depth
             depth += 1
             id = str(cat_tag.get('href'))
-            tmp.id = id[id.find('id='):]
+            tmp.id = id[id.find('id=')+3:]
             self.cat.append(tmp.__dict__)
