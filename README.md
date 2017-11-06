@@ -2,7 +2,7 @@ MicroBot
 ===================
 
 
-Open API for Microbot.
+Micro Bot Engine for Robin's [Open API](https://github.com/robincloud/openapi).
 
 <br>
 
