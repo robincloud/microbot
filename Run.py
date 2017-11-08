@@ -64,7 +64,7 @@ def get_MID():
                 'uuid': str(getnode()),
             }
             requests.post(DEVICE_URL, json=data)
-            chk_ver(r_json['version'])
+            chk_ver(r_json['clientVersion'])
             return r_json
         except:
             print('Server is Down')
@@ -157,7 +157,10 @@ def Crawl(work_list):
 
         data.data.meta = meta.meta
         data.make()
-        print(data.data.option_name + ' Finish!')
+        try:
+            print(data.data.option_name + ' Finish!')
+        except:
+            print('Finish!')
         return data.data.__dict__
 
 

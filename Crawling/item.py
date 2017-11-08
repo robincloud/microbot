@@ -9,11 +9,9 @@ class nods():
 
 class data():
     def __init__(self):
-        self.pkey = 0
         self.cat = ''
         self.count = 0
         self.item_name = ''
-        self.option_name = ''
         self.nodes = []
         self.meta = {}
         self.agent = ''

@@ -19,14 +19,16 @@ class mk_data():
             nodes.make()
             self.data.nodes = nodes.node_list
 
-            self.data.pkey = self.soup_1.find('li', class_='on').get('data-filter-value')
+            pkey = str(self.soup_1.find('li', class_='on').get('data-filter-value'))
+            if pkey != 'None':
+                self.data.pkey = pkey
+                self.data.option_name = self.option
 
             self.data.cat = self.data.meta['cat']
             self.data.count = self.data.meta['compare_count']
             self.data.item_name = str(
                 self.soup_1.find('div', class_='h_area').findChildren(recursive=False)[0].find(text=True)).replace('\n',
                                                                                                             '').strip()
-            self.data.option_name = self.option
             self.data.agent = str(socket.gethostname())
 
         else:
