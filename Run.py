@@ -12,11 +12,10 @@ import socket
 from uuid import getnode
 import psutil
 
-GET_URL = 'http://192.168.0.167:7000/get/'
-POST_URL = 'http://192.168.0.167:7000/return/'
-POST_URL_2 = 'http://robin-api.oneprice.co.kr/items'
-DEVICE_URL = 'http://192.168.0.167:7000/device/'
-MSG_URL = 'http://192.168.0.167:7000/msg/'
+GET_URL = 'https://robin-api.oneprice.co.kr/tasks?agent='
+POST_URL = 'https://robin-api.oneprice.co.kr/items'
+DEVICE_URL = 'https://robin-api.oneprice.co.kr/agents/enroll'
+MSG_URL = 'https://robin-api.oneprice.co.kr/agents/msg'
 URL_F = 'http://shopping.naver.com/detail/detail.nhn?nv_mid='
 URL_M = '&pkey='
 URL_T = '&withFee='
@@ -58,8 +57,8 @@ def chk_ver(version):
 def get_MID():
     while 1:
         try:
-            req = requests.get(GET_URL)
-            r_json = req.json()
+            req = requests.get(GET_URL + str(socket.gethostname()))
+            r_json = req.json()[0]
             data = {
                 'name': str(socket.gethostname()),
                 'uuid': str(getnode()),
@@ -80,8 +79,7 @@ def post(info, data_list):
     }
     while 1:
         try:
-            requests.post(POST_URL, data=json.dumps(data))
-            requests.post(POST_URL_2, json=data)
+            requests.post(POST_URL, json=data)
             return
         except:
             print('Server is Down')
@@ -174,6 +172,7 @@ if __name__ == '__main__':
         print(msg[0])
 
         data_list = pool.map(Crawl, get_pkey(info['mid']))
+        cpu_first = psutil.cpu_percent()
         post(info, data_list)
 
         for data in data_list:
@@ -186,5 +185,5 @@ if __name__ == '__main__':
             msg.append("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
             print(msg[-1])
             time.sleep(10-int(time.time() - start_time))
-        requests.post(MSG_URL, json={'uuid': getnode(), 'msg': msg, 'cpu': psutil.cpu_percent()})
+        requests.post(MSG_URL, json={'uuid': getnode(), 'msg': msg, 'cpu': (cpu_first + psutil.cpu_percent()) / 2})
         print('')

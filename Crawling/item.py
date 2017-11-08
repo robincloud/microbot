@@ -16,6 +16,7 @@ class data():
         self.option_name = ''
         self.nodes = []
         self.meta = {}
+        self.agent = ''
 
 class meta():
     def __init__(self):

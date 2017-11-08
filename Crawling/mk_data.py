@@ -1,5 +1,6 @@
 from Crawling.item import data
 from Crawling.mk_node import mk_node
+import socket
 
 
 class mk_data():
@@ -26,6 +27,7 @@ class mk_data():
                 self.soup_1.find('div', class_='h_area').findChildren(recursive=False)[0].find(text=True)).replace('\n',
                                                                                                             '').strip()
             self.data.option_name = self.option
+            self.data.agent = str(socket.gethostname())
 
         else:
             self.data.id = self.mid
