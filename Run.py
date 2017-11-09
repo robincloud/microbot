@@ -73,9 +73,10 @@ def get_MID():
 
 def post(info, data_list):
     data = {
-        'id': 'nv_' + info['id'],
+        'agent': str(socket.gethostname()),
+        'id': info['id'],
         'mid': info['mid'],
-        'data': data_list,
+        'data': data_list
     }
     while 1:
         try:
