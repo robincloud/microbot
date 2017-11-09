@@ -182,7 +182,10 @@ if __name__ == '__main__':
         post(info, data_list)
 
         for data in data_list:
-            msg.append(data['option_name'] + ' Finish!')
+            try:
+                msg.append(data['option_name'] + ' Finish!')
+            except:
+                msg.append('Finish!')
 
         msg.append("--- %s seconds ---" % (time.time() - start_time))
         print(msg[-1])
