@@ -27,8 +27,9 @@ def getNowDate():
     day = now.day
     hour = now.hour
     minute = now.minute
-    nowDate = str(year)+"-"+str(month)+"-"+str(day)+","+str(hour)+":"+str(minute)
+    nowDate = str(year) + "-" + str(month) + "-" + str(day) + "," + str(hour) + ":" + str(minute)
     return nowDate
+
 
 def chk_ver(version):
     path = os.path.dirname(os.path.abspath('Run.py'))
@@ -51,7 +52,6 @@ def chk_ver(version):
             data['success'] = False
             data['version'] = ''
             json.dump(data, f, ensure_ascii=False, indent="\t")
-
 
 
 def get_MID():
@@ -118,7 +118,8 @@ def get_pkey(mid):
                         tmp_list = []
                         tmp_list.append(mid)
                         tmp_list.append(tmp)
-                        tmp_list.append(str(item.findChildren(recursive=False)[2].findChildren(recursive=False)[1].find(text=True)))
+                        tmp_list.append(
+                            str(item.findChildren(recursive=False)[2].findChildren(recursive=False)[1].find(text=True)))
                         work_list.append(tmp_list)
             except:
                 tmp_list = []
@@ -126,6 +127,7 @@ def get_pkey(mid):
                 tmp_list.append('')
                 work_list.append(tmp_list)
             return work_list
+
 
 def Crawl(work_list):
     if work_list[1] == True:
@@ -187,6 +189,6 @@ if __name__ == '__main__':
         if int(time.time() - start_time) < 10:
             msg.append("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
             print(msg[-1])
-            time.sleep(10-int(time.time() - start_time))
-        requests.post(MSG_URL, json={'uuid': getnode(), 'msg': msg, 'cpu': (cpu_first + psutil.cpu_percent()) / 2})
+            time.sleep(10 - int(time.time() - start_time))
+        requests.post(MSG_URL, json={'uuid': str(getnode()), 'msg': msg, 'cpu': (cpu_first + psutil.cpu_percent()) / 2})
         print('')
