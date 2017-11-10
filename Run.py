@@ -180,11 +180,8 @@ if __name__ == '__main__':
         msg.append("--- start " + info['mid'] + ' ---')
         print(msg[0])
 
-        data_list = []
-        for item in get_pkey(info['mid']):
-            data_list.append(Crawl(item))
 
-        #data_list = pool.map(Crawl, get_pkey(info['mid']))
+        data_list = pool.map(Crawl, get_pkey(info['mid']))
         cpu_first = psutil.cpu_percent()
         post(info, data_list)
 
