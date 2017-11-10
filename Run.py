@@ -20,6 +20,7 @@ URL_F = 'http://shopping.naver.com/detail/detail.nhn?nv_mid='
 URL_M = '&pkey='
 URL_T = '&withFee='
 
+
 def getNowDate():
     now = datetime.datetime.now()
     year = now.year
@@ -64,7 +65,7 @@ def get_MID():
                 'uuid': str(getnode()),
             }
             requests.post(DEVICE_URL, json=data)
-            #chk_ver(r_json['clientVersion'])
+            # chk_ver(r_json['clientVersion'])
             return r_json
         except:
             print('Server is Down')
@@ -180,7 +181,6 @@ if __name__ == '__main__':
         msg.append("--- start " + info['mid'] + ' ---')
         print(msg[0])
 
-
         data_list = pool.map(Crawl, get_pkey(info['mid']))
         cpu_first = psutil.cpu_percent()
         post(info, data_list)
@@ -194,7 +194,7 @@ if __name__ == '__main__':
         msg.append("--- %s seconds ---" % (time.time() - start_time))
         print(msg[-1])
 
-        if int(time.time() - start_time) < 10:
+        if int(time.time() - start_time) < 5:
             msg.append("--- Sleeping For %d Sec ---" % int(5 - int(time.time() - start_time)))
             print(msg[-1])
             time.sleep(5 - int(time.time() - start_time))
