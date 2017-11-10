@@ -6,11 +6,11 @@ import time
 import datetime
 from multiprocessing import Pool
 import json
-import git
 import os
 import socket
 from uuid import getnode
 import psutil
+import sys
 
 GET_URL = 'https://robin-api.oneprice.co.kr/tasks?agent='
 POST_URL = 'https://robin-api.oneprice.co.kr/items'
@@ -39,13 +39,12 @@ def chk_ver(version):
             json_data = f.read()
             data = json.loads(json_data)
         if version != data['version']:
-            g = git.cmd.Git(path)
-            print(g.pull())
-        with open(path + '/version.json', "w") as f:
-            data['version'] = version
-            data['date'] = getNowDate()
-            data['success'] = True
-            json.dump(data, f, ensure_ascii=False, indent="\t")
+            with open(path + '/version.json', "w") as f:
+                data['version'] = version
+                data['date'] = getNowDate()
+                data['success'] = True
+                json.dump(data, f, ensure_ascii=False, indent="\t")
+            sys.exit(1)
     except:
         with open(path + '/version.json', "w") as f:
             data['date'] = getNowDate()
