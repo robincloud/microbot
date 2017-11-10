@@ -198,8 +198,8 @@ if __name__ == '__main__':
         print(msg[-1])
 
         if int(time.time() - start_time) < 10:
-            msg.append("--- Sleeping For %d Sec ---" % int(10 - int(time.time() - start_time)))
+            msg.append("--- Sleeping For %d Sec ---" % int(5 - int(time.time() - start_time)))
             print(msg[-1])
-            time.sleep(10 - int(time.time() - start_time))
+            time.sleep(5 - int(time.time() - start_time))
         requests.post(MSG_URL, json={'uuid': str(getnode()), 'msg': msg, 'cpu': (cpu_first + psutil.cpu_percent()) / 2})
         print('')
