@@ -32,7 +32,7 @@ def getNowDate():
 
 
 def chk_ver(version):
-    path = os.getcwd()
+    path = '/home/pi/Microbot'
     data = {}
     try:
         with open(path + '/version.json', "r") as f:
