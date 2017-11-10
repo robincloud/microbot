@@ -57,6 +57,7 @@ $ git clone https://github.com/robincloud/microbot.git ~/Microbot
 #### <i class="icon-refresh"></i> Add to crontab to run automatically when booted
 ```bash
 $ sudo crontab -e
+$ sudo chmod 755 /home/pi/Microbot/loop.sh
 $ @reboot sh /home/pi/Microbot/loop.sh
 ```
 
