@@ -134,7 +134,10 @@ def Crawl(work_list):
     if work_list[1] == True:
         data = mk_data('', '', work_list[0], '', work_list[1])
         data.make()
-        print(data.data.option_name + ' Finish!')
+        try:
+            print(data.data.option_name + ' Finish!')
+        except:
+            print('Finish!')
         return data.data.__dict__
     else:
         if work_list[1] != '':
@@ -177,7 +180,11 @@ if __name__ == '__main__':
         msg.append("--- start " + info['mid'] + ' ---')
         print(msg[0])
 
-        data_list = pool.map(Crawl, get_pkey(info['mid']))
+        data_list = []
+        for item in get_pkey(info['mid']):
+            data_list.append(Crawl(item))
+
+        #data_list = pool.map(Crawl, get_pkey(info['mid']))
         cpu_first = psutil.cpu_percent()
         post(info, data_list)
 
