@@ -44,7 +44,7 @@ def chk_ver(version):
                 data['date'] = getNowDate()
                 data['success'] = True
                 json.dump(data, f, ensure_ascii=False, indent="\t")
-            sys.exit(1)
+                os._exit(0)
     except Exception as err:
         print(err)
         with open(path + '/version.json', "w") as f:
