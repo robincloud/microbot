@@ -34,16 +34,30 @@ You have to change default Hostname, Password, Timezone.
 $ sudo raspi-config
 ```
 
+#### <i class="icon-pencil"></i> Update Raspbian
+This command will make your RPi up to date
+```
+$ sudo apt-get update
+$ sudo apt-get upgrade -y
+$ sudo apt-get dist-upgrade -y
+$ sudo rpi-update
+```
+
 #### <i class="icon-folder-open"></i> Install Dependencies
 ```bash
 $ sudo apt-get install -y python3-pip git-core
-$ sudo pip3 install requests Beautifulsoup4
+$ sudo pip3 install requests Beautifulsoup4 GitPython psutil
 ```
 
 #### <i class="icon-refresh"></i> Get Source
-
 ```bash
 $ git clone https://github.com/robincloud/microbot.git ~/Microbot
+```
+
+#### <i class="icon-refresh"></i> Add to crontab to run automatically when booted
+```bash
+$ sudo crontab -e
+$ @reboot sh /home/pi/Microbot/loop.sh
 ```
 
 <br>
