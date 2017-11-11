@@ -101,6 +101,12 @@ def get_pkey(mid):
             tmp_list.append(True)
             work_list.append(tmp_list)
             return work_list
+        elif '출시예정' in valid_txt:
+            tmp_list = []
+            tmp_list.append(mid)
+            tmp_list.append(True)
+            work_list.append(tmp_list)
+            return work_list
     except:
         try:
             valid_txt = soup.find('span', class_='g_err_ico').find_next_sibling('h2').find(text=True)
