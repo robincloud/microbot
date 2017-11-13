@@ -92,10 +92,16 @@ def get_pkey(mid):
     work_list = []
     req = requests.get(URL_F + mid)
     html = req.text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
     try:
         valid_txt = soup.find('h3', class_='release').find(text=True)
         if '판매중단' in valid_txt:
+            tmp_list = []
+            tmp_list.append(mid)
+            tmp_list.append(True)
+            work_list.append(tmp_list)
+            return work_list
+        elif '출시예정' in valid_txt:
             tmp_list = []
             tmp_list.append(mid)
             tmp_list.append(True)
@@ -145,9 +151,9 @@ def Crawl(work_list):
             req_1 = requests.post(URL_F + work_list[0] + URL_M + work_list[1] + URL_T + 'False')
             req_2 = requests.post(URL_F + work_list[0] + URL_M + work_list[1] + URL_T + 'True')
             html_1 = req_1.text
-            soup_1 = BeautifulSoup(html_1, 'html.parser')
+            soup_1 = BeautifulSoup(html_1, 'lxml')
             html_2 = req_2.text
-            soup_2 = BeautifulSoup(html_2, 'html.parser')
+            soup_2 = BeautifulSoup(html_2, 'lxml')
             meta = mk_meta(soup_1)
             meta.make()
             data = mk_data(soup_1, soup_2, work_list[0], work_list[2], False)
@@ -155,9 +161,9 @@ def Crawl(work_list):
             req_1 = requests.post(URL_F + work_list[0] + URL_T + 'False')
             req_2 = requests.post(URL_F + work_list[0] + URL_T + 'True')
             html_1 = req_1.text
-            soup_1 = BeautifulSoup(html_1, 'html.parser')
+            soup_1 = BeautifulSoup(html_1, 'lxml')
             html_2 = req_2.text
-            soup_2 = BeautifulSoup(html_2, 'html.parser')
+            soup_2 = BeautifulSoup(html_2, 'lxml')
             meta = mk_meta(soup_1)
             meta.make()
             data = mk_data(soup_1, soup_2, work_list[0], '', False)
