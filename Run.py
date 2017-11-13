@@ -10,7 +10,6 @@ import os
 import socket
 from uuid import getnode
 import psutil
-import sys
 
 GET_URL = 'https://robin-api.oneprice.co.kr/tasks?agent='
 POST_URL = 'https://robin-api.oneprice.co.kr/items'
@@ -45,9 +44,8 @@ def chk_ver(version):
                 data['date'] = getNowDate()
                 data['success'] = True
                 json.dump(data, f, ensure_ascii=False, indent="\t")
-                os._exit(0)
-    except Exception as err:
-        print(err)
+            os._exit(0)
+    except:
         with open(path + '/version.json', "w") as f:
             data['date'] = getNowDate()
             data['success'] = False
@@ -92,28 +90,22 @@ def get_pkey(mid):
     work_list = []
     req = requests.get(URL_F + mid)
     html = req.text
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'html5lib')
     try:
         valid_txt = soup.find('h3', class_='release').find(text=True)
         if '판매중단' in valid_txt:
-            tmp_list = []
-            tmp_list.append(mid)
-            tmp_list.append(True)
+            tmp_list = [mid, True]
             work_list.append(tmp_list)
             return work_list
         elif '출시예정' in valid_txt:
-            tmp_list = []
-            tmp_list.append(mid)
-            tmp_list.append(True)
+            tmp_list = [mid, True]
             work_list.append(tmp_list)
             return work_list
     except:
         try:
             valid_txt = soup.find('span', class_='g_err_ico').find_next_sibling('h2').find(text=True)
             if '상품이' in valid_txt:
-                tmp_list = []
-                tmp_list.append(mid)
-                tmp_list.append(True)
+                tmp_list = [mid, True]
                 work_list.append(tmp_list)
                 return work_list
         except:
@@ -123,16 +115,11 @@ def get_pkey(mid):
                 for item in option_list:
                     tmp = str(item.get('data-filter-value'))
                     if tmp != '':
-                        tmp_list = []
-                        tmp_list.append(mid)
-                        tmp_list.append(tmp)
-                        tmp_list.append(
-                            str(item.findChildren(recursive=False)[2].findChildren(recursive=False)[1].find(text=True)))
+                        tmp_list = [mid, tmp, str(
+                            item.findChildren(recursive=False)[2].findChildren(recursive=False)[1].find(text=True))]
                         work_list.append(tmp_list)
             except:
-                tmp_list = []
-                tmp_list.append(mid)
-                tmp_list.append('')
+                tmp_list = [mid, '']
                 work_list.append(tmp_list)
             return work_list
 
@@ -151,9 +138,9 @@ def Crawl(work_list):
             req_1 = requests.post(URL_F + work_list[0] + URL_M + work_list[1] + URL_T + 'False')
             req_2 = requests.post(URL_F + work_list[0] + URL_M + work_list[1] + URL_T + 'True')
             html_1 = req_1.text
-            soup_1 = BeautifulSoup(html_1, 'html.parser')
+            soup_1 = BeautifulSoup(html_1, 'html5lib')
             html_2 = req_2.text
-            soup_2 = BeautifulSoup(html_2, 'html.parser')
+            soup_2 = BeautifulSoup(html_2, 'html5lib')
             meta = mk_meta(soup_1)
             meta.make()
             data = mk_data(soup_1, soup_2, work_list[0], work_list[2], False)
@@ -161,9 +148,9 @@ def Crawl(work_list):
             req_1 = requests.post(URL_F + work_list[0] + URL_T + 'False')
             req_2 = requests.post(URL_F + work_list[0] + URL_T + 'True')
             html_1 = req_1.text
-            soup_1 = BeautifulSoup(html_1, 'html.parser')
+            soup_1 = BeautifulSoup(html_1, 'html5lib')
             html_2 = req_2.text
-            soup_2 = BeautifulSoup(html_2, 'html.parser')
+            soup_2 = BeautifulSoup(html_2, 'html5lib')
             meta = mk_meta(soup_1)
             meta.make()
             data = mk_data(soup_1, soup_2, work_list[0], '', False)
