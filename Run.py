@@ -10,7 +10,6 @@ import os
 import socket
 from uuid import getnode
 import psutil
-import sys
 
 GET_URL = 'https://robin-api.oneprice.co.kr/tasks?agent='
 POST_URL = 'https://robin-api.oneprice.co.kr/items'
@@ -45,7 +44,7 @@ def chk_ver(version):
                 data['date'] = getNowDate()
                 data['success'] = True
                 json.dump(data, f, ensure_ascii=False, indent="\t")
-                os._exit(0)
+            os._exit(0)
     except Exception as err:
         print(err)
         with open(path + '/version.json', "w") as f:
@@ -65,7 +64,7 @@ def get_MID():
                 'uuid': str(getnode()),
             }
             requests.post(DEVICE_URL, json=data)
-            # chk_ver(r_json['clientVersion'])
+            chk_ver(r_json['clientVersion'])
             return r_json
         except:
             print('Server is Down')
