@@ -50,7 +50,7 @@ def chk_ver(version):
         with open(path + '/version.json', "w") as f:
             data['date'] = getNowDate()
             data['success'] = False
-            data['version'] = ''
+            data['version'] = version
             json.dump(data, f, ensure_ascii=False, indent="\t")
 
 
