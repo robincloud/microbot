@@ -19,14 +19,7 @@ class data():
 class meta():
     def __init__(self):
         self.cat = ''
-        self.cats = []
-        self.cat_id = ''
-        self.compare_count = ''
-        self.review_count = ''
-        self.infos = ''
         self.thumbnail = ''
-        self.jjim = ''
-        self.thumbs = []
 
 class category():
     def __init__(self):
