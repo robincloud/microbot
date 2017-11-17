@@ -5,7 +5,7 @@ while true; do
   cd /home/pi/Microbot
   git reset --hard HEAD
   git pull
-  sleep 10
+  sleep 10000
   sudo reboot
 done
 exit
