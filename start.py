@@ -9,8 +9,7 @@ import os
 import socket
 from uuid import getnode
 import psutil
-import gevent
-from gevent.queue import Queue
+from multiprocessing import Process, Queue
 
 GET_URL = 'https://robin-api.oneprice.co.kr/tasks?agent='
 POST_URL = 'https://robin-api.oneprice.co.kr/items'
@@ -66,7 +65,7 @@ def get_MID():
                 'uuid': str(getnode()),
             }
             requests.post(DEVICE_URL, json=data)
-            #chk_ver(r_json['clientVersion'])
+            chk_ver(r_json['clientVersion'])
             return r_json
         except:
             print('Server is Down')
@@ -172,10 +171,10 @@ def Crawl(work_list):
 
 
 def worker(name):
-    while not tasks.empty():
+    while 1:
         msg = []
         start_time = time.time()
-        info = tasks.get()
+        info = get_MID()
 
         msg.append("--- start " + info['mid'] + ' ' + name + ' ---')
         print(msg[0])
@@ -199,26 +198,21 @@ def worker(name):
         if int(time.time() - start_time) < 5:
             msg.append("--- Sleeping For %d Sec ---" % int(5 - int(time.time() - start_time)))
             print(msg[-1])
-            # time.sleep(5 - int(time.time() - start_time))
+            time.sleep(5 - int(time.time() - start_time))
         requests.post(MSG_URL,
                       json={'uuid': str(getnode()), 'msg': msg, 'cpu': (cpu_first + psutil.cpu_percent()) / 2})
         print('')
-        gevent.sleep(0)
-        tasks.put_nowait(get_MID())
-
-    print('Quitting time!')
-
-def boss():
-        for i in range(8):
-            tasks.put_nowait(get_MID())
-
 
 if __name__ == '__main__':
-        gevent.spawn(boss).run()
-        gevent.joinall([
-            gevent.spawn(worker, 'a'),
-            gevent.spawn(worker, 'b'),
-            gevent.spawn(worker, 'c'),
-            gevent.spawn(worker, 'd')
-        ])
-
+    w1 = Process(target=worker, args='a')
+    w2 = Process(target=worker, args='b')
+    w3 = Process(target=worker, args='c')
+    w4 = Process(target=worker, args='d')
+    w1.start()
+    w2.start()
+    w3.start()
+    w4.start()
+    w1.join()
+    w2.join()
+    w3.join()
+    w4.join()
