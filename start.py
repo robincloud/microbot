@@ -18,6 +18,7 @@ MSG_URL = 'https://robin-api.oneprice.co.kr/agents/msg'
 URL_F = 'http://shopping.naver.com/detail/detail.nhn?nv_mid='
 URL_M = '&pkey='
 URL_T = '&withFee='
+PROXY = {'http': 'http://211.138.60.25:80'}
 
 
 def getNowDate():
@@ -64,7 +65,7 @@ def get_MID():
                 'uuid': str(getnode()),
             }
             requests.post(DEVICE_URL, json=data)
-            chk_ver(r_json['clientVersion'])
+            #chk_ver(r_json['clientVersion'])
             return r_json
         except:
             print('Server is Down')
@@ -89,7 +90,8 @@ def post(info, data_list):
 
 def get_pkey(mid):
     work_list = []
-    req = requests.get(URL_F + mid)
+    s = requests.Session()
+    req = s.get(URL_F + mid, proxies=PROXY)
     html = req.text
     soup = BeautifulSoup(html, 'lxml')
     try:
@@ -139,9 +141,10 @@ def Crawl(work_list):
             print('Finish!')
         return data.data.__dict__
     else:
+        s = requests.Session()
         if work_list[1] != '':
-            req_1 = requests.post(URL_F + work_list[0] + URL_M + work_list[1] + URL_T + 'False')
-            req_2 = requests.post(URL_F + work_list[0] + URL_M + work_list[1] + URL_T + 'True')
+            req_1 = requests.post(URL_F + work_list[0] + URL_M + work_list[1] + URL_T + 'False', proxies=PROXY)
+            req_2 = requests.post(URL_F + work_list[0] + URL_M + work_list[1] + URL_T + 'True', proxies=PROXY)
             html_1 = req_1.text
             soup_1 = BeautifulSoup(html_1, 'lxml')
             html_2 = req_2.text
@@ -150,8 +153,8 @@ def Crawl(work_list):
             meta.make()
             data = DataService(soup_1, soup_2, work_list[0], work_list[2], False)
         else:
-            req_1 = requests.post(URL_F + work_list[0] + URL_T + 'False')
-            req_2 = requests.post(URL_F + work_list[0] + URL_T + 'True')
+            req_1 = requests.post(URL_F + work_list[0] + URL_T + 'False', proxies=PROXY)
+            req_2 = requests.post(URL_F + work_list[0] + URL_T + 'True', proxies=PROXY)
             html_1 = req_1.text
             soup_1 = BeautifulSoup(html_1, 'lxml')
             html_2 = req_2.text
@@ -194,10 +197,10 @@ def worker(name):
         msg.append("--- %s seconds ---" % (time.time() - start_time))
         print(msg[-1])
 
-        if int(time.time() - start_time) < 5:
-            msg.append("--- Sleeping For %d Sec ---" % int(5 - int(time.time() - start_time)))
-            print(msg[-1])
-            time.sleep(5 - int(time.time() - start_time))
+        #if int(time.time() - start_time) < 5:
+        #    msg.append("--- Sleeping For %d Sec ---" % int(5 - int(time.time() - start_time)))
+        #    print(msg[-1])
+        #    time.sleep(5 - int(time.time() - start_time))
         requests.post(MSG_URL,
                       json={'uuid': str(getnode()), 'msg': msg, 'cpu': (cpu_first + psutil.cpu_percent()) / 2})
         print('')
