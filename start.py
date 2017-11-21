@@ -194,10 +194,10 @@ def worker(name):
         msg.append("--- %s seconds ---" % (time.time() - start_time))
         print(msg[-1])
 
-        #if int(time.time() - start_time) < 5:
-         #   msg.append("--- Sleeping For %d Sec ---" % int(5 - int(time.time() - start_time)))
-         #   print(msg[-1])
-            #time.sleep(5 - int(time.time() - start_time))
+        if int(time.time() - start_time) < 5:
+            msg.append("--- Sleeping For %d Sec ---" % int(5 - int(time.time() - start_time)))
+            print(msg[-1])
+            time.sleep(5 - int(time.time() - start_time))
         requests.post(MSG_URL,
                       json={'uuid': str(getnode()), 'msg': msg, 'cpu': (cpu_first + psutil.cpu_percent()) / 2})
         print('')
