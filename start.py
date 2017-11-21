@@ -9,7 +9,7 @@ import os
 import socket
 from uuid import getnode
 import psutil
-from multiprocessing import Process, Queue
+from multiprocessing import Process
 
 GET_URL = 'https://robin-api.oneprice.co.kr/tasks?agent='
 POST_URL = 'https://robin-api.oneprice.co.kr/items'
@@ -18,7 +18,6 @@ MSG_URL = 'https://robin-api.oneprice.co.kr/agents/msg'
 URL_F = 'http://shopping.naver.com/detail/detail.nhn?nv_mid='
 URL_M = '&pkey='
 URL_T = '&withFee='
-tasks = Queue()
 
 
 def getNowDate():
@@ -202,6 +201,7 @@ def worker(name):
         requests.post(MSG_URL,
                       json={'uuid': str(getnode()), 'msg': msg, 'cpu': (cpu_first + psutil.cpu_percent()) / 2})
         print('')
+
 
 if __name__ == '__main__':
     w1 = Process(target=worker, args='a')
