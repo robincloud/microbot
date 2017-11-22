@@ -223,7 +223,7 @@ if __name__ == '__main__':
     workers = []
     for i in range(0, NUM_OF_WORKERS):
         workers.append(Process(target=worker, args=chr(ord('a') + i)))
-    for i in range(0, NUM_OF_WORKERS):
+    for i in range(0, len(workers)):
         workers[i].start()
-    for i in range(0, NUM_OF_WORKERS):
+    for i in range(0, len(workers)):
         workers[i].join()
