@@ -20,6 +20,7 @@ URL_F = 'http://shopping.naver.com/detail/detail.nhn?nv_mid='
 URL_M = '&pkey='
 URL_T = '&withFee='
 PROXY = {'http': 'http://211.138.60.25:80'}
+NUM_OF_WORKERS = 6
 
 
 def getNowDate():
@@ -219,21 +220,10 @@ def worker(name):
 
 
 if __name__ == '__main__':
-    w1 = Process(target=worker, args='a')
-    w2 = Process(target=worker, args='b')
-    w3 = Process(target=worker, args='c')
-    w4 = Process(target=worker, args='d')
-    w5 = Process(target=worker, args='e')
-    w6 = Process(target=worker, args='f')
-    w1.start()
-    w2.start()
-    w3.start()
-    w4.start()
-    w5.start()
-    w6.start()
-    w1.join()
-    w2.join()
-    w3.join()
-    w4.join()
-    w5.join()
-    w6.join()
+    workers = []
+    for i in range(0, NUM_OF_WORKERS):
+        workers.append(Process(target=worker, args=chr(ord('a') + i)))
+    for i in range(0, NUM_OF_WORKERS):
+        workers[i].start()
+    for i in range(0, NUM_OF_WORKERS):
+        workers[i].join()
