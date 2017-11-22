@@ -14,7 +14,6 @@ class Data:
         self.item_name = ''
         self.nodes = []
         self.meta = {}
-        self.agent = ''
 
 class Meta:
     def __init__(self):

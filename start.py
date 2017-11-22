@@ -13,6 +13,7 @@ from multiprocessing import Process
 
 GET_URL = 'https://robin-api.oneprice.co.kr/tasks?agent='
 POST_URL = 'https://robin-api.oneprice.co.kr/items'
+POST_URL_LOCAL = 'http://localhost:8081/items'
 DEVICE_URL = 'https://robin-api.oneprice.co.kr/agents/enroll'
 MSG_URL = 'https://robin-api.oneprice.co.kr/agents/msg'
 URL_F = 'http://shopping.naver.com/detail/detail.nhn?nv_mid='
@@ -65,7 +66,7 @@ def get_MID():
                 'uuid': str(getnode()),
             }
             requests.post(DEVICE_URL, json=data)
-            chk_ver(r_json['clientVersion'])
+            #chk_ver(r_json['clientVersion'])
             return r_json
         except:
             print('Server is Down')
@@ -81,7 +82,9 @@ def post(info, data_list):
     }
     while 1:
         try:
-            requests.post(POST_URL, json=data)
+            a = requests.post(POST_URL, json=data)
+            if a.status_code == 500:
+                print(a.text)
             return
         except:
             print('Server is Down')
@@ -91,7 +94,7 @@ def post(info, data_list):
 def get_pkey(mid):
     work_list = []
     s = requests.Session()
-    req = s.get(URL_F + mid, proxies=PROXY)
+    req = s.get(URL_F + mid)
     html = req.text
     soup = BeautifulSoup(html, 'lxml')
     try:
@@ -133,7 +136,7 @@ def get_pkey(mid):
 
 def Crawl(work_list):
     if work_list[1] == True:
-        data = DataService('', '', work_list[0], '', work_list[1])
+        data = DataService('', '', work_list[0], '', work_list[1], '')
         data.make()
         try:
             print(data.data.option_name + ' Finish!')
@@ -143,25 +146,31 @@ def Crawl(work_list):
     else:
         s = requests.Session()
         if work_list[1] != '':
+            #req_1 = requests.post(URL_F + work_list[0] + URL_M + work_list[1] + URL_T + 'False')
+            #req_2 = requests.post(URL_F + work_list[0] + URL_M + work_list[1] + URL_T + 'True')
             req_1 = requests.post(URL_F + work_list[0] + URL_M + work_list[1] + URL_T + 'False', proxies=PROXY)
             req_2 = requests.post(URL_F + work_list[0] + URL_M + work_list[1] + URL_T + 'True', proxies=PROXY)
+
             html_1 = req_1.text
             soup_1 = BeautifulSoup(html_1, 'lxml')
             html_2 = req_2.text
             soup_2 = BeautifulSoup(html_2, 'lxml')
             meta = MetaService(soup_1)
             meta.make()
-            data = DataService(soup_1, soup_2, work_list[0], work_list[2], False)
+            data = DataService(soup_1, soup_2, work_list[0], work_list[2], False, work_list[1])
         else:
+            #req_1 = requests.post(URL_F + work_list[0] + URL_T + 'False')
+            #req_2 = requests.post(URL_F + work_list[0] + URL_T + 'True')
             req_1 = requests.post(URL_F + work_list[0] + URL_T + 'False', proxies=PROXY)
             req_2 = requests.post(URL_F + work_list[0] + URL_T + 'True', proxies=PROXY)
+
             html_1 = req_1.text
             soup_1 = BeautifulSoup(html_1, 'lxml')
             html_2 = req_2.text
             soup_2 = BeautifulSoup(html_2, 'lxml')
             meta = MetaService(soup_1)
             meta.make()
-            data = DataService(soup_1, soup_2, work_list[0], '', False)
+            data = DataService(soup_1, soup_2, work_list[0], '', False, '')
 
         data.data.meta = meta.meta
         data.make()
@@ -174,36 +183,39 @@ def Crawl(work_list):
 
 def worker(name):
     while 1:
-        msg = []
-        start_time = time.time()
-        info = get_MID()
+        try:
+            msg = []
+            start_time = time.time()
+            info = get_MID()
 
-        msg.append("--- start " + info['mid'] + ' ' + name + ' ---')
-        print(msg[0])
+            msg.append("--- start " + info['mid'] + ' ' + name + ' ---')
+            print(msg[0])
 
-        data_list = []
-        for item in get_pkey(info['mid']):
-            data_list.append(Crawl(item))
+            data_list = []
+            for item in get_pkey(info['mid']):
+                data_list.append(Crawl(item))
 
-        cpu_first = psutil.cpu_percent()
-        post(info, data_list)
+            cpu_first = psutil.cpu_percent()
+            post(info, data_list)
 
-        for data in data_list:
-            try:
-                msg.append(data['option_name'] + ' Finish!')
-            except:
-                msg.append('Finish!')
+            for data in data_list:
+                try:
+                    msg.append(data['option_name'] + ' Finish!')
+                except:
+                    msg.append('Finish!')
 
-        msg.append("--- %s seconds ---" % (time.time() - start_time))
-        print(msg[-1])
+            msg.append("--- %s seconds ---" % (time.time() - start_time))
+            print(msg[-1])
 
-        #if int(time.time() - start_time) < 5:
-        #    msg.append("--- Sleeping For %d Sec ---" % int(5 - int(time.time() - start_time)))
-        #    print(msg[-1])
-        #    time.sleep(5 - int(time.time() - start_time))
-        requests.post(MSG_URL,
-                      json={'uuid': str(getnode()), 'msg': msg, 'cpu': (cpu_first + psutil.cpu_percent()) / 2})
-        print('')
+            #if int(time.time() - start_time) < 5:
+            #    msg.append("--- Sleeping For %d Sec ---" % int(5 - int(time.time() - start_time)))
+            #    print(msg[-1])
+            #    time.sleep(5 - int(time.time() - start_time))
+            requests.post(MSG_URL,
+                          json={'uuid': str(getnode()), 'msg': msg, 'cpu': (cpu_first + psutil.cpu_percent()) / 2})
+            print('')
+        except Exception as e:
+            print(e)
 
 
 if __name__ == '__main__':

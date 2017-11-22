@@ -4,13 +4,14 @@ import socket
 
 
 class DataService:
-    def __init__(self, soup_1, soup_2, mid, option, valid):
+    def __init__(self, soup_1, soup_2, mid, option, valid, pkey):
         self.data = Data()
         self.soup_1 = soup_1
         self.soup_2 = soup_2
         self.mid = mid
         self.option = option
         self.valid = valid
+        self.pkey = pkey
 
     def make(self):
         if not self.valid:
@@ -19,9 +20,8 @@ class DataService:
             nodes.make()
             self.data.nodes = nodes.node_list
 
-            pkey = str(self.soup_1.find('li', class_='on').get('data-filter-value'))
-            if pkey != 'None':
-                self.data.pkey = pkey
+            if self.pkey != '':
+                self.data.pkey = self.pkey
                 self.data.option_name = self.option
 
             self.data.cat = self.data.meta['cat']
@@ -29,7 +29,6 @@ class DataService:
             self.data.item_name = str(
                 self.soup_1.find('div', class_='h_area').findChildren(recursive=False)[0].find(text=True))
             self.data.item_name = self.data.item_name.replace('\n', '').strip()
-            self.data.agent = str(socket.gethostname())
 
         else:
             self.data.id = self.mid
