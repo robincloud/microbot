@@ -1,40 +1,104 @@
-from pybin.item import Data
 from pybin.node import NodeService
+from pybin.other import OtherService
+import requests
 import socket
+from bs4 import BeautifulSoup, SoupStrainer
+
+URL = 'http://shopping.naver.com/detail/detail.nhn'
+URL_2 = 'http://m.shopping.naver.com/detail/price_compare_list_area.nhn'
 
 
 class DataService:
-    def __init__(self, soup_1, soup_2, mid, option, valid, pkey):
-        self.data = Data()
-        self.soup_1 = soup_1
-        self.soup_2 = soup_2
-        self.mid = mid
-        self.option = option
-        self.valid = valid
-        self.pkey = pkey
+    def __init__(self, info):
+        self.data = []
+        self.id = info['id']
+        self.mid = info['mid']
+        self.agent = str(socket.gethostname())
 
     def make(self):
-        if not self.valid:
-            # node 생성
-            nodes = NodeService(self.soup_1, self.soup_2)
-            nodes.make()
-            self.data.nodes = nodes.node_list
+        header = {
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 7.0; SAMSUNG SM-G955U Build/NRD90M) AppleWebKit/537.36 (KHTML, '
+                          'like Gecko) SamsungBrowser/5.4 Chrome/51.0.2704.106 Mobile Safari/537.36',
+            'Accept': 'text / html'
+        }
+        payload = {
+            'nv_mid': self.mid
+        }
 
-            if self.pkey != '':
-                self.data.pkey = self.pkey
-                self.data.option_name = self.option
+        other_soup = BeautifulSoup(requests.get(URL, params=payload).text.replace('\n', ''), 'lxml',
+                                   parse_only=SoupStrainer('div'))
+        other = OtherService(other_soup)
+        other.pkey()
+        if other.pkey_list[0] == 300:
+            self.data.append({
+                'id': self.id,
+                'mid': self.mid,
+                'cat_id': 0,
+                'pkey': 'NA',
+                'is_invalid': 1,
+                'meta': {
+                    'error': '상품이 존재하지 않습니다.'
+                }
+            })
 
-            self.data.cat = self.data.meta['cat']
-            self.data.count = self.data.meta['compare_count']
-            self.data.item_name = str(
-                self.soup_1.find('div', class_='h_area').findChildren(recursive=False)[0].find(text=True))
-            self.data.item_name = self.data.item_name.replace('\n', '').strip()
+        elif other.pkey_list[0] == 200:
+            other.others()
+            payload_2 = {
+                'nvMid': self.mid,
+                'withFee': False
+            }
+            req_1 = requests.get(URL_2, headers=header, params=payload_2)
+            html_1 = req_1.json()['htReturnValue']['contents'][0]
+            soup_1 = BeautifulSoup(html_1, 'lxml', parse_only=SoupStrainer('li', class_='_itemSection'))
 
-        else:
-            self.data.id = self.mid
-            self.data.mid = self.mid
-            self.data.cat_id = 0
-            self.data.pkey = 'NA'
-            self.data.is_invalid = 1
-            self.data.meta['error'] = {'message': '상품이 존재하지 않습니다.',
-                                       'text': '일시적으로 상품이 품절되었거나, 노출이 제한된 상품일 수 있습니다.'}
+            payload_2['withFee'] = True
+            req_2 = requests.get(URL_2, headers=header, params=payload_2)
+            html_2 = req_2.json()['htReturnValue']['contents'][0]
+            soup_2 = BeautifulSoup(html_2, 'lxml', parse_only=SoupStrainer('li', class_='_itemSection'))
+
+            node = NodeService(soup_1, soup_2)
+            node.make()
+            tmp_data = {
+                'cat': other.cat,
+                'item_name': other.item_name,
+                'count': other.count,
+                'nodes': node.nodes,
+                'meta': {
+                    'cat': other.cat,
+                    'thumbnail': other.thumbnail
+                }
+            }
+            self.data.append(tmp_data)
+
+        elif other.pkey_list[0] == 100:
+            other.others()
+            for item in other.pkey_list[1:]:
+                payload_2 = {
+                    'nvMid': self.mid,
+                    'pkey': item[0],
+                    'withFee': False
+                }
+                req_1 = requests.get(URL_2, headers=header, params=payload_2)
+                html_1 = req_1.json()['htReturnValue']['contents'][0]
+                soup_1 = BeautifulSoup(html_1, 'lxml', parse_only=SoupStrainer('li', class_='_itemSection'))
+
+                payload_2['withFee'] = True
+                req_2 = requests.get(URL_2, headers=header, params=payload_2)
+                html_2 = req_2.json()['htReturnValue']['contents'][0]
+                soup_2 = BeautifulSoup(html_2, 'lxml', parse_only=SoupStrainer('li', class_='_itemSection'))
+
+                node = NodeService(soup_1, soup_2)
+                node.make()
+                tmp_data = {
+                    'cat': other.cat,
+                    'item_name': other.item_name,
+                    'option_name': item[1],
+                    'pkey': item[0],
+                    'count': other.count,
+                    'nodes': node.nodes,
+                    'meta': {
+                        'cat': other.cat,
+                        'thumbnail': other.thumbnail
+                    }
+                }
+                self.data.append(tmp_data)
