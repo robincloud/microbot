@@ -1,4 +1,5 @@
-from pybin.data import DataService
+from pybin.mid.data import DataService as midDS
+from pybin.keyword.data import DataService as keyDS
 import time
 import json
 import datetime
@@ -14,10 +15,8 @@ POST_URL = 'https://robin-api.oneprice.co.kr/items'
 POST_URL_LOCAL = 'http://localhost:8081/items'
 DEVICE_URL = 'https://robin-api.oneprice.co.kr/agents/enroll'
 MSG_URL = 'https://robin-api.oneprice.co.kr/agents/msg'
-URL_F = 'http://shopping.naver.com/detail/detail.nhn?nv_mid='
-URL_M = '&pkey='
-URL_T = '&withFee='
 PROXY = {'http': 'http://211.138.60.25:80'}
+NUM_OF_WORKERS = 4
 
 
 def getNowDate():
@@ -54,7 +53,7 @@ def chk_ver(version):
             json.dump(data, f, ensure_ascii=False, indent="\t")
 
 
-def get_MID():
+def get_task():
     while 1:
         try:
             req = requests.get(GET_URL + str(socket.gethostname()))
@@ -88,25 +87,25 @@ def worker(name):
         try:
             msg = []
             start_time = time.time()
-            info = get_MID()
+            info = get_task()
 
-            # mid = '10549634158'
-            # info = {'id': 'nv_' + mid, 'mid': mid}
-
-            msg.append("--- start " + info['mid'] + ' ' + name + ' ---')
-            print(msg[0])
-
-            data_set = DataService(info)
-            data_set.make()
-
-            cpu_first = psutil.cpu_percent()
-            post(data_set)
-
-            for data in data_set.data:
-                try:
-                    msg.append(data['option_name'] + ' Finish!')
-                except:
-                    msg.append('Finish!')
+            if 'mid' in info.keys():
+                msg.append("--- start " + info['mid'] + ' ' + name + ' ---')
+                print(msg[0])
+                data_set = midDS(info)
+                data_set.make()
+                post(data_set)
+                for data in data_set.data:
+                    try:
+                        msg.append(data['option_name'] + ' Finish!')
+                    except:
+                        msg.append('Finish!')
+            else:
+                data_set = keyDS(info)
+                msg.append("--- start " + info['keyword'] + ' ' + name + ' ---')
+                print(msg[0])
+                data_set.make()
+                msg.append('Finish!')
 
             msg.append("--- %s seconds ---" % (time.time() - start_time))
             print(msg[-1])
@@ -116,28 +115,17 @@ def worker(name):
             #    print(msg[-1])
             #    time.sleep(5 - int(time.time() - start_time))
             requests.post(MSG_URL,
-                          json={'uuid': str(getnode()), 'msg': msg, 'cpu': (cpu_first + psutil.cpu_percent()) / 2})
+                          json={'uuid': str(getnode()), 'msg': msg, 'cpu': psutil.cpu_percent()})
             print('')
         except Exception as e:
             print(e)
 
 
 if __name__ == '__main__':
-    w1 = Process(target=worker, args='a')
-    w2 = Process(target=worker, args='b')
-    w3 = Process(target=worker, args='c')
-    w4 = Process(target=worker, args='d')
-    w5 = Process(target=worker, args='e')
-    w6 = Process(target=worker, args='f')
-    w1.start()
-    w2.start()
-    w3.start()
-    w4.start()
-    w5.start()
-    w6.start()
-    w1.join()
-    w2.join()
-    w3.join()
-    w4.join()
-    w5.join()
-    w6.join()
+    workers = []
+    for i in range(0, NUM_OF_WORKERS):
+        workers.append(Process(target=worker, args=chr(ord('a') + i)))
+    for i in range(0, len(workers)):
+        workers[i].start()
+    for i in range(0, len(workers)):
+        workers[i].join()

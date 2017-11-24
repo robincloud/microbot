@@ -1,5 +1,5 @@
-from pybin.node import NodeService
-from pybin.other import OtherService
+from pybin.mid.node import NodeService
+from pybin.mid.other import OtherService
 import requests
 import socket
 from bs4 import BeautifulSoup, SoupStrainer
