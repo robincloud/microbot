@@ -63,7 +63,7 @@ def get_task():
                 'uuid': str(getnode()),
             }
             requests.post(DEVICE_URL, json=data)
-            # chk_ver(r_json['clientVersion'])
+            chk_ver(r_json['clientVersion'])
             return r_json
         except:
             print('Server is Down')
